@@ -9,7 +9,7 @@ require("model.php");
 
   <div class="tab-content">
     <div id="menuPic" class="tab-pane fade in active">
-      <img src="img/menu.jpg">
+      <img src="img/louisaMenu.jpeg">
     </div>
     <div id="searchMenu" class="tab-pane fade">
       <div class="row">
@@ -19,7 +19,7 @@ require("model.php");
         </div>
 
       </div>
-      <div class=" row">
+      <div class="row">
         <h3>搜尋系列：</h3>
         <?php seriesBtn(); ?>
       </div>

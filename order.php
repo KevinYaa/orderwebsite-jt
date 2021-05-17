@@ -79,7 +79,7 @@ initCart();
           <div class="modal-body">
             <div class="container-fluid">
 
-              <div class="row">
+              <div class="row" id="size">
                 <div class="col-md-4">
                   <label for="size">大小：</label>
 
@@ -112,7 +112,7 @@ initCart();
                   </div>
                 </div>
               </div>
-              <div class="row">
+              <div class="row" id="Sweet">
                 <div class="col-md-4">
                   <label for="selectedSweet">甜度：</label>
 
@@ -127,7 +127,7 @@ initCart();
                   </select>
                 </div>
               </div>
-              <div class="row">
+              <div class="row" id="Ice">
                 <div class="col-md-4">
                   <label for="selectedIce">冰塊：</label>
 
@@ -192,17 +192,29 @@ $(document).ready(function() {
       productName = JSON.parse(data)[0];
       productSize = JSON.parse(data)[1];
       productPrice = JSON.parse(data)[2];
+      productcategory = JSON.parse(data)[3];
+      if(productcategory == "Food"){
+        $("#size").hide();
+        $("#Sweet").hide();
+        $("#Ice").hide();
+        $("#selectedSweet").val("");
+        $("#selectedIce").val("");
+      }else{
+        $("#size").show();
+        $("#Sweet").show();
+        $("#Ice").show();
+        $("#selectedSweet").val("正常");
+        $("#selectedIce").val("正常");
+      }   
       $("#selectedName").html(productName[0]);
       $("#addtoName").val(productName[0]);
-      $("#selectedSize").html("");
       $("#selectedForm #num").val("1");
+      $("#selectedSize").empty();
       for (var i = 0; i < productSize.length; i++) {
-        $("#selectedSize").append("<option value='" + productSize[i] + "'>" + productSize[i] + "</option>");
+          $("#selectedSize").append("<option value='" + productSize[i] + "'>" + productSize[i] + "</option>");
       }
       $("#selectedPrice").val(productPrice[0]);
       $("#addtoPrice").val(productPrice[0]);
-      $("#selectedSweet").val("正常");
-      $("#selectedIce").val("正常");
       $("#selectedNote").val("");
       $("#modalSubmit").val("加入");
       $("#modalSubmit").addClass("submit-select");
@@ -285,11 +297,23 @@ $(document).ready(function() {
     if ($("#modalSubmit").hasClass("submit-edit")) {
       rowElement = "#row" + id;
       name = productName;
-      size = $("#selectedSize").val();
+      if($("#selectedSize").val() == "null"){
+        size = ' '
+      }else{
+        size = $("#selectedSize").val();
+      }   
       price = $("#addtoPrice").val();
       num = $("#num").val();
-      sweet = $("#selectedSweet").val();
-      ice = $("#selectedIce").val();
+      if($("#selectedSweet").val() == null){
+        sweet = ' '
+      }else{
+        sweet = $("#selectedSweet").val();
+      }  
+      if($("#selectedIce").val() == null){
+        ice = ' '
+      }else{
+        ice = $("#selectedIce").val();
+      } 
       note = $("#selectedNote").val();
       $.post("control.php?act=edittoCart", {
         productId: id,
@@ -314,11 +338,23 @@ $(document).ready(function() {
       });
     } else if ($("#modalSubmit").hasClass("submit-select")) {
       name = $("#addtoName").val();
-      size = $("#selectedSize").val();
+      if($("#selectedSize").val() == "null"){
+        size = ' '
+      }else{
+        size = $("#selectedSize").val();
+      }      
       price = $("#addtoPrice").val();
       num = $("#num").val();
-      sweet = $("#selectedSweet").val();
-      ice = $("#selectedIce").val();
+      if($("#selectedSweet").val() == null){
+        sweet = ' '
+      }else{
+        sweet = $("#selectedSweet").val();
+      }  
+      if($("#selectedIce").val() == null){
+        ice = ' '
+      }else{
+        ice = $("#selectedIce").val();
+      }  
       note = $("#selectedNote").val();
       $.post("control.php?act=addtoCart", {
         addtoName: name,

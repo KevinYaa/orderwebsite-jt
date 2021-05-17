@@ -1,2 +1,2 @@
-<img src="img/intro1.jpg">
-<img src="img/intro2.jpg">
+<img src="img/louisa1.png">
+<img src="img/louisa2.jpeg">

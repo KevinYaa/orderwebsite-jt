@@ -90,11 +90,25 @@ function seriesBtn()
 {
   global $conn;
   mysqli_query($conn, "set names utf8");
-  $sql = "SELECT `series` FROM `product` GROUP BY `series`";
+  $sql = "SELECT `series`,`category` FROM `product` GROUP BY `series`";
   $result = mysqli_query($conn, $sql);
+  echo '<div class ="rowcategory">
+        <h4 style="color:#b33c42"><b>餐點</h4>';
   while ($row = mysqli_fetch_assoc($result)) {
-    echo '<button class="btn btn-success btn-series" id="' . $row["series"] . '">' . $row["series"] . '</button>';
+    if($row["category"]=="Food"){
+      echo '<button class="btn btn-success btn-series" id="' . $row["series"] . '">' . $row["series"] . '</button>';
+    }
   }
+  echo '</div>';
+  $result = mysqli_query($conn, $sql);
+  echo '<div class ="rowcategory">
+        <h4 style="color:#b33c42"><b>飲料</h4>';
+  while ($row = mysqli_fetch_assoc($result)) {
+    if($row["category"]=="Drink"){
+      echo '<button class="btn btn-success btn-series" id="' . $row["series"] . '">' . $row["series"] . '</button>';
+    }  
+  }
+  echo '</div>';
 }
 
 function selectProduct($productName)
@@ -108,12 +122,14 @@ function selectProduct($productName)
   $selectedName = array();
   $selectedSize = array();
   $selectedPrice = array();
+  $selectedcategory = array();
   while ($row = mysqli_fetch_assoc($result)) {
     array_push($selectedName, $row["productName"]);
     array_push($selectedSize, $row["size"]);
     array_push($selectedPrice, $row["price"]);
+    array_push($selectedcategory, $row["category"]);
   }
-  $result = array($selectedName, $selectedSize, $selectedPrice);
+  $result = array($selectedName, $selectedSize, $selectedPrice,$selectedcategory);
   echo json_encode($result);
 
   // header("location:index.php");
@@ -218,7 +234,7 @@ function findProductId($name, $size)
 {
   global $conn;
   mysqli_query($conn, "set names utf8");
-  $sql = "SELECT `productId` FROM `product` WHERE `productName` = '" . $name . "' AND `size` = '" . $size . "'";
+  $sql = "SELECT `productId` FROM `product` WHERE (`productName` = '" . $name . "' AND `size` = '" . $size . "') or `productName` = '" . $name . "'";
   $result = mysqli_query($conn, $sql);
   $row = mysqli_fetch_assoc($result);
   $id = $row["productId"];
@@ -235,7 +251,11 @@ function findProductName($idStr)
     $sql = "SELECT * FROM `product` WHERE `productId` = '" . $idArr[$i] . "'";
     $result = mysqli_query($conn, $sql);
     $row = mysqli_fetch_assoc($result);
-    $nameStr = $row["productName"] . "(" . $row["size"] . ")";
+    if($row["category"]=="Drink"){
+      $nameStr = $row["productName"] . "(" . $row["size"] . ")";
+    }else{
+      $nameStr = $row["productName"];
+    }
     array_push($nameArr, $nameStr);
   }
 
