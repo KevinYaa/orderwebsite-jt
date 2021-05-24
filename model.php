@@ -14,7 +14,14 @@ function login($userName, $passWord)
     $_SESSION["failed"] = "logIn";
     unset($_SESSION["signUp"]);
   }
-  header("location:index.php");
+  $result = mysqli_query($conn, $sql);
+  $row = mysqli_fetch_assoc($result);
+  if($row['userName']=="admin"){
+    header("location:admin.php");
+  }else{
+    header("location:index.php");
+  }
+  
 }
 
 function logout()
@@ -372,6 +379,93 @@ function showHistory()
     echo '<h3>無購買記錄哦~</h3>';
   }
 }
+function adminshowHistory()
+{
+  echo '<h1>歷史訂單</h1>';
+  global $conn;
+  mysqli_query($conn, "set names utf8");
+  $sql = "SELECT * FROM `bill` ORDER BY `bill`.`time` DESC";
+  $result = mysqli_query($conn, $sql);
+  if (mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+      $nameArr = findProductName($row["productIdList"]);
+      $priceArr = explode(",", $row["priceList"]);
+      $numArr = explode(",", $row["quantityList"]);
+      $sweetArr = explode(",", $row["sweetList"]);
+      $iceArr = explode(",", $row["iceList"]);
+      $noteArr = explode(";", $row["notesList"]);
+      $userArr = explode(";",$row["userName"]);
+      $numTotal = 0;
+      for ($i = 0; $i < sizeof($numArr); $i++) {
+        $numTotal += $numArr[$i];
+      }
+
+      echo '<div class="panel panel-default">
+    <div class="panel-heading" class="panel-title" data-toggle="collapse" data-target="#bill' . $row["billNo"] . '">
+      <div class="row">
+        <b class="col-md-2">訂單號碼：' . $row["billNo"] . '</b> 
+        <b class="col-md-2">客戶：' . $row["userName"] . '</b>
+        <b class="col-md-2">方式：' . $row["type"] . '</b>  
+        <b class="col-md-2">數量：' . $numTotal . '</b>  
+        <b class="col-md-2 col-xs-12">總額：' . $row["totalAmount"] . '</b>
+        <b class="col-md-4 col-xs-12">時間：' . $row["time"] . '</b>
+      </div>
+    </div>';
+      echo '<div class="panel-collapse collapse" id="bill' . $row["billNo"] . '">
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead><tr><th>商品</th><th>單價</th><th>數量</th><th>小計</th><th>甜度</th><th>冰塊</th><th>備註</th></tr></thead>
+            <tbody id="bill' . $row["billNo"] . 'Table">';
+      for ($i = 0; $i < sizeof($nameArr); $i++) {
+        $smallSum = intval($priceArr[$i]) * intval($numArr[$i]);
+        echo '<tr><td>' . $nameArr[$i] . '</td><td>' . $priceArr[$i] . '</td><td>' . $numArr[$i] . '</td><td>' . $smallSum . '</td><td>' . $sweetArr[$i] . '</td><td>' . $iceArr[$i] . '</td>';
+        if ($noteArr[$i] != null) {
+          echo '<td>' . $noteArr[$i] . '</td>';
+        } else {
+          echo '<td></td>';
+        }
+        echo '</tr>';
+      }
+
+      echo '</tbody>
+          </table>
+          <a class="button btn btn-info" id="' . $row["time"] . '">完成</a>
+          <a class="button btn btn-danger" id="' . $row["time"] . '">刪除</a>
+        </div>
+      </div>
+    </div>
+  </div>';
+    }
+  } else {
+    echo '<h3>無購買記錄哦~</h3>';
+  }
+}
+
+function orderDone($recordtime)
+{
+  global $conn;
+  mysqli_query($conn, "set names utf8");
+  $sql = "DELETE FROM `bill` WHERE `time` = '" . $recordtime . "'";
+  if (mysqli_query($conn, $sql)) {
+    echo "訂單完成~";
+  } else {
+    echo "Error deleting record: " . mysqli_error($conn);
+  }
+}
+
+function orderDelete($recordtime)
+{
+  global $conn;
+  mysqli_query($conn, "set names utf8");
+  $sql = "DELETE FROM `bill` WHERE `time` = '" . $recordtime . "'";
+  if (mysqli_query($conn, $sql)) {
+    echo "訂單刪除！";
+  } else {
+    echo "Error deleting record: " . mysqli_error($conn);
+  }
+}
+
 
 function initCart()
 {

@@ -35,4 +35,10 @@ switch ($action) {
   case "getTotal":
     getTotal();
     break;
+  case "orderDone":
+    orderDone($_REQUEST["recordtime"]);
+    break;
+  case "orderDelete":
+    orderDelete($_REQUEST["recordtime"]);
+    break;
 }
