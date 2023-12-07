@@ -7,15 +7,15 @@ require("header.php");
   <div class="container" id="loginPage">
     <center>
       <div class="card card-default" id="loginCard">
-        <h1>蟬吃茶點餐機器人</h1>
+        <h1>金好吃點餐系統</h1>
         <form action="control.php?act=signUp" method="POST">
           <div class="row">
-            <label for="userName">賬戶名稱</label>
+            <label for="userName">帳戶名稱</label>
             <input type="text" name="userName" required autofocus>
           </div>
           <br>
           <div class="row">
-            <label for="passWord">賬戶密碼</label>
+            <label for="passWord">帳戶密碼</label>
             <input type="password" name="passWord" required>
           </div>
           <br>
